@@ -11,8 +11,7 @@ export default {
       precompress: false
     }),
     paths: {
-      base: '/1010-glow',
-      assets: '/1010-glow/assets'
+      base: '/1010-glow'
     }
   }
 };
