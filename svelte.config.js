@@ -5,12 +5,11 @@ export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      pages: 'build',
-      assets: 'build',
+      pages: 'dist',
+      assets: 'dist',
       fallback: null,
       precompress: false
     }),
-    // Ensure base path is applied
     paths: {
       base: '/1010-glow',
       assets: '/1010-glow/assets'
