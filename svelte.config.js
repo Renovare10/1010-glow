@@ -10,8 +10,10 @@ export default {
       fallback: null,
       precompress: false
     }),
+    // Ensure base path is applied
     paths: {
-      base: '/1010-glow'
+      base: '/1010-glow',
+      assets: '/1010-glow/assets'
     }
   }
 };
