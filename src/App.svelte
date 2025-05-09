@@ -10,7 +10,7 @@
   main {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Stick to top */
+    align-items: center; /* Center vertically */
     height: 100vh;
     width: 100vw;
     margin: 0;
