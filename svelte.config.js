@@ -5,11 +5,13 @@ export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      // Default options are fine for S3
       pages: 'build',
       assets: 'build',
       fallback: null,
       precompress: false
-    })
+    }),
+    paths: {
+      base: '/1010-glow'
+    }
   }
 };
