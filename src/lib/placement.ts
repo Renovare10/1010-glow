@@ -2,8 +2,8 @@ import { writable, get, type Writable } from 'svelte/store';
 import type { Piece } from './stores';
 
 /** Interface for placement events */
-interface PlacementEvent {
-  type: 'start' | 'validate' | 'apply' | 'cancel';
+export interface PlacementEvent {
+  type: 'start' | 'validate' | 'apply' | 'clear' | 'cancel';
   piece: Piece | null;
   event: PointerEvent | null;
   boardRect: DOMRect | null;
@@ -40,7 +40,7 @@ export class PlacementManager {
     this.store.set(event);
   }
 
-  /** Processes placement pipeline: calculate position, validate, apply */
+  /** Processes placement pipeline: calculate position, validate, apply, clear */
   process(
     gameState: Writable<boolean[][]>,
     slots: Writable<Piece[]>
@@ -70,6 +70,7 @@ export class PlacementManager {
 
       this.applyPlacement(piece, result.row!, result.col!, gameState);
       this.refillSlot(slotIndex, slots);
+      this.store.set({ type: 'clear', piece: null, event: null, boardRect: null, slotIndex: null }); // Trigger clear event
       this.store.set({ type: 'apply', piece, event: null, boardRect: null, slotIndex: null });
       this.isProcessing = false;
     });

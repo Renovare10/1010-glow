@@ -1,5 +1,6 @@
-import { writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 import { PlacementManager } from './placement';
+import { LineClearer } from './lineClearer';
 
 export type Screen = 'menu' | 'game' | 'pause' | 'store';
 export const uiState = writable<{ screen: Screen; paused: boolean }>({
@@ -35,3 +36,6 @@ export const dragging = writable<{
 
 // Placement manager store
 export const placementManager = new PlacementManager(pieces);
+
+// Line clearer, subscribed to placement pipeline
+export const lineClearer = new LineClearer(placementManager.getStore(), gameState);
