@@ -9,3 +9,17 @@ export const uiState = writable<{ screen: Screen; paused: boolean }>({
 export const gameState = writable<boolean[][]>(
   Array(10).fill(null).map(() => Array(10).fill(false))
 );
+
+export type Piece = { name: string; shape: boolean[][] };
+export const pieces: Piece[] = [
+  { name: 'square', shape: [[true, true], [true, true]] },
+  { name: 'L', shape: [[true, false], [true, false], [true, true]] }
+];
+
+export const slots = writable<Piece[]>([]);
+export const refillSlots = () => {
+  const newSlots = Array(3)
+    .fill(null)
+    .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
+  slots.set(newSlots);
+};

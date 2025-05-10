@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { gameState } from './lib/stores';
+  import { gameState, refillSlots } from './lib/stores';
+  import PieceSlots from './PieceSlots.svelte';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    refillSlots();
+    return () => {};
+  });
 </script>
 
 <div class="board">
@@ -10,17 +17,18 @@
       {/each}
     {/each}
   </div>
+  <PieceSlots />
 </div>
 
 <style>
   .board {
     text-align: center;
     width: 100%;
-    height: auto;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    margin: 10px 0 0 0;
+    align-items: center;
+    flex-direction: column; /* Stack grid and slots vertically */
+    gap: 20px; /* Space between board and slots */
   }
   .grid {
     display: grid;
