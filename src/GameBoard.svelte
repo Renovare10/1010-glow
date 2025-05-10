@@ -6,22 +6,44 @@
   onMount(() => {
     slots.set(Array(3).fill(null).map(() => pieces[Math.floor(Math.random() * pieces.length)]));
     placementManager.process(gameState, slots); // Initialize pipeline
-    return () => {};
+
+    const handleDrop = (event: PointerEvent | TouchEvent) => {
+      handlePointerUp(event);
+    };
+
+    window.addEventListener('pointerup', handleDrop);
+    window.addEventListener('touchend', handleDrop);
+    return () => {
+      window.removeEventListener('pointerup', handleDrop);
+      window.removeEventListener('touchend', handleDrop);
+    };
   });
 
-  function handlePointerUp(event: PointerEvent) {
+  function handlePointerUp(event: PointerEvent | TouchEvent) {
     const board = document.querySelector('.grid');
-    if (!board || !board.contains(event.target as Node) || !$dragging.piece) {
-      console.log('Invalid drop (not on board or no piece), returning to slot');
+    if (!board || !$dragging.piece) {
       dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
       return;
     }
 
     const rect = board.getBoundingClientRect();
+    const clientX = 'touches' in event ? event.changedTouches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.changedTouches[0].clientY : event.clientY;
+
+    const isOnBoard = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+    if (!isOnBoard) {
+      dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
+      return;
+    }
+
+    event.preventDefault();
+
+    const pointerEvent = { clientX, clientY, isPrimary: true, pointerId: 1, pointerType: 'touch' } as PointerEvent;
+
     placementManager.trigger({
       type: 'start',
       piece: $dragging.piece,
-      event,
+      event: pointerEvent,
       boardRect: rect,
       slotIndex: $dragging.slotIndex
     });
@@ -30,7 +52,7 @@
 </script>
 
 <div class="board">
-  <div class="grid" on:pointerup={handlePointerUp}>
+  <div class="grid">
     {#each $gameState as row, i}
       {#each row as cell, j}
         <div class="cell" class:occupied={cell}></div>

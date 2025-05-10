@@ -24,6 +24,7 @@ interface PlacementResult {
 export class PlacementManager {
   private store = writable<PlacementEvent>({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
   private pieces: Piece[];
+  private isProcessing = false;
 
   constructor(pieces: Piece[]) {
     this.pieces = pieces;
@@ -45,25 +46,32 @@ export class PlacementManager {
     slots: Writable<Piece[]>
   ) {
     this.store.subscribe(({ type, piece, event, boardRect, slotIndex }) => {
-      if (type !== 'start' || !piece || !event || !boardRect) return;
+      if (this.isProcessing || type !== 'start' || !piece || !event || !boardRect) {
+        if (type === 'start') {
+          this.store.set({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
+        }
+        return;
+      }
+
+      this.isProcessing = true;
 
       const result = this.calculatePosition(piece, event, boardRect);
       if (!result.success) {
         this.store.set({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
-        console.log(result.error);
+        this.isProcessing = false;
         return;
       }
 
       if (!this.validatePlacement(piece, result.row!, result.col!, gameState)) {
         this.store.set({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
-        console.log('Invalid drop (out of bounds or overlap)');
+        this.isProcessing = false;
         return;
       }
 
       this.applyPlacement(piece, result.row!, result.col!, gameState);
       this.refillSlot(slotIndex, slots);
       this.store.set({ type: 'apply', piece, event: null, boardRect: null, slotIndex: null });
-      console.log('Placed piece:', piece, 'at', { row: result.row, col: result.col });
+      this.isProcessing = false;
     });
   }
 
