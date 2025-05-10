@@ -82,15 +82,22 @@
   .slots {
     display: flex;
     justify-content: center;
-    gap: 10vw;
-    margin-top: 20px;
+    gap: 8vw; /* Reverted to previous version */
+    margin-top: 10px;
+    /* Fixed height for largest piece (5 cells tall) + gap */
+    height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
   }
   .slot {
     border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc((min(74vw, 74vh) / 20) * 5);
+    height: calc((min(74vw, 74vh) / 20) * 5);
   }
   .piece-grid {
     display: grid;
-    gap: 0.4vw;
+    gap: 2px; /* Fixed gap for consistent cell spacing */
     cursor: grab;
     touch-action: none;
   }
@@ -98,8 +105,8 @@
     cursor: grabbing;
   }
   .piece-cell {
-    width: calc(min(90vw, 90vh) / 20);
-    height: calc(min(90vw, 90vh) / 20);
+    width: calc(min(74vw, 74vh) / 20);
+    height: calc(min(74vw, 74vh) / 20);
     background: #007acc;
     box-sizing: border-box;
   }
@@ -108,8 +115,8 @@
     outline: none;
   }
   .preview .piece-cell {
-    width: calc(min(80vw, 80vh) / 10.5);
-    height: calc(min(80vw, 80vh) / 10.5);
+    width: calc(min(64vw, 64vh) / 11.11);
+    height: calc(min(64vw, 64vh) / 11.11);
   }
   .preview {
     z-index: 1000;

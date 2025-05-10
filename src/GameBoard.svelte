@@ -71,19 +71,21 @@
   .board {
     text-align: center;
     width: 100%;
+    max-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     gap: 20px;
+    overflow: auto;
   }
   .grid {
     display: grid;
     grid-template: repeat(10, 1fr) / repeat(10, 1fr);
-    width: min(90vw, 90vh);
-    max-width: 700px;
-    height: min(90vw, 90vh);
-    max-height: 700px;
+    width: min(74vw, 74vh); /* User-specified size */
+    max-width: 600px;
+    height: min(74vw, 74vh);
+    max-height: 600px;
     aspect-ratio: 1;
     gap: 2px;
     background: #252526;
