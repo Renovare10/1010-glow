@@ -27,7 +27,7 @@
   .slots {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 10vw; /* Keep your updated value */
     margin-top: 20px;
   }
   .slot {
@@ -35,11 +35,11 @@
   }
   .piece-grid {
     display: grid;
-    gap: 4px;
+    gap: 0.4vw; /* Scale gap relative to viewport, smaller for tighter piece grids */
   }
   .piece-cell {
-    width: 40px;
-    height: 40px;
+    width: calc(min(90vw, 90vh) / 20); /* Scale with board, ~1/20th of board size */
+    height: calc(min(90vw, 90vh) / 20); /* Match width for square cells */
     background: #007acc;
     box-sizing: border-box;
   }
