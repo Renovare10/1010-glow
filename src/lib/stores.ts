@@ -23,3 +23,11 @@ export const refillSlots = () => {
     .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
   slots.set(newSlots);
 };
+
+// Store for dragging state
+export const dragging = writable<{
+  piece: Piece | null;
+  slotIndex: number | null;
+  x: number;
+  y: number;
+}>({ piece: null, slotIndex: null, x: 0, y: 0 });
