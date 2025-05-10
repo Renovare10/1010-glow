@@ -1,29 +1,29 @@
 <script lang="ts">
   import { slots, dragging } from './lib/stores';
+  import type { Piece } from './lib/stores';
   let startX: number, startY: number;
 
-  function handlePointerDown(event: PointerEvent, piece: any, index: number) {
-    event.preventDefault();
-    startX = event.clientX;
-    startY = event.clientY;
+  function handleStart(event: PointerEvent | TouchEvent, piece: Piece, index: number) {
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    startX = clientX;
+    startY = clientY;
     dragging.set({ piece, slotIndex: index, x: startX, y: startY });
 
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointermove', handleMove);
+    window.addEventListener('touchmove', handleMove, { passive: false });
   }
 
-  function handlePointerMove(event: PointerEvent) {
+  function handleMove(event: PointerEvent | TouchEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
     dragging.update(d => ({
       ...d,
-      x: event.clientX,
-      y: event.clientY
+      x: clientX,
+      y: clientY
     }));
-  }
-
-  function handlePointerUp() {
-    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
-    window.removeEventListener('pointermove', handlePointerMove);
-    window.removeEventListener('pointerup', handlePointerUp);
   }
 </script>
 
@@ -32,7 +32,8 @@
     <div class="slot">
       <div
         class="piece-grid"
-        on:pointerdown={e => handlePointerDown(e, piece, index)}
+        on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
+        on:touchstart|passive={e => handleStart(e, piece, index)}
         style="grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr); grid-template-rows: repeat({piece.shape.length}, 1fr);"
       >
         {#each piece.shape as row, i}
@@ -91,6 +92,7 @@
     display: grid;
     gap: 0.4vw;
     cursor: grab;
+    touch-action: none;
   }
   .piece-grid:active {
     cursor: grabbing;
@@ -106,8 +108,8 @@
     outline: none;
   }
   .preview .piece-cell {
-    width: calc(min(80vw, 80vh) / 11.11); /* ~90% of board cell size */
-    height: calc(min(80vw, 80vh) / 11.11); /* ~90% of board cell size */
+    width: calc(min(80vw, 80vh) / 10.5);
+    height: calc(min(80vw, 80vh) / 10.5);
   }
   .preview {
     z-index: 1000;
