@@ -30,23 +30,25 @@
 <div class="slots">
   {#each $slots as piece, index (piece.name + index)}
     <div class="slot">
-      <div
-        class="piece-grid"
-        on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
-        on:touchstart|passive={e => handleStart(e, piece, index)}
-        style="grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr); grid-template-rows: repeat({piece.shape.length}, 1fr);"
-      >
-        {#each piece.shape as row, i}
-          {#each row as cell, j}
-            {#if cell}
-              <div
-                class="piece-cell"
-                style="grid-row: {i + 1}; grid-column: {j + 1};"
-              ></div>
-            {/if}
+      {#if $dragging.slotIndex !== index || !$dragging.piece}
+        <div
+          class="piece-grid"
+          on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
+          on:touchstart|passive={e => handleStart(e, piece, index)}
+          style="grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr); grid-template-rows: repeat({piece.shape.length}, 1fr);"
+        >
+          {#each piece.shape as row, i}
+            {#each row as cell, j}
+              {#if cell}
+                <div
+                  class="piece-cell"
+                  style="grid-row: {i + 1}; grid-column: {j + 1};"
+                ></div>
+              {/if}
+            {/each}
           {/each}
-        {/each}
-      </div>
+        </div>
+      {/if}
     </div>
   {/each}
 </div>
@@ -82,7 +84,7 @@
   .slots {
     display: flex;
     justify-content: center;
-    gap: 8vw; /* Reverted to previous version */
+    gap: 8vw;
     margin-top: 10px;
     /* Fixed height for largest piece (5 cells tall) + gap */
     height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
@@ -97,7 +99,7 @@
   }
   .piece-grid {
     display: grid;
-    gap: 2px; /* Fixed gap for consistent cell spacing */
+    gap: 2px;
     cursor: grab;
     touch-action: none;
   }
