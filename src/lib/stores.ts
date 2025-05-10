@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { PlacementManager } from './placement';
 
 export type Screen = 'menu' | 'game' | 'pause' | 'store';
 export const uiState = writable<{ screen: Screen; paused: boolean }>({
@@ -31,3 +32,6 @@ export const dragging = writable<{
   x: number;
   y: number;
 }>({ piece: null, slotIndex: null, x: 0, y: 0 });
+
+// Placement manager store
+export const placementManager = new PlacementManager(pieces);
