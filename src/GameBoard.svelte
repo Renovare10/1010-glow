@@ -4,8 +4,13 @@
   import { onMount } from 'svelte';
 
   onMount(() => {
-    slots.set(Array(3).fill(null).map(() => pieces[Math.floor(Math.random() * pieces.length)]));
-    placementManager.process(gameState, slots); // Initialize pipeline
+    // Initialize slots with random pieces
+    const newSlots = Array(3)
+      .fill(null)
+      .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
+    slots.set(newSlots);
+    console.log('Initial slots set:', $slots); // Debug log
+    placementManager.process(gameState, slots);
 
     const handleDrop = (event: PointerEvent | TouchEvent) => {
       handlePointerUp(event);

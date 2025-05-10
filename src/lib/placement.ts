@@ -70,43 +70,59 @@ export class PlacementManager {
 
       this.applyPlacement(piece, result.row!, result.col!, gameState);
       this.refillSlot(slotIndex, slots);
-      this.store.set({ type: 'clear', piece: null, event: null, boardRect: null, slotIndex: null }); // Trigger clear event
+      this.store.set({ type: 'clear', piece: null, event: null, boardRect: null, slotIndex: null });
       this.store.set({ type: 'apply', piece, event: null, boardRect: null, slotIndex: null });
       this.isProcessing = false;
     });
   }
 
-  /** Calculates drop position based on piece type */
+  /** Calculates drop position by snapping shape's anchor to nearest grid position */
   private calculatePosition(piece: Piece, event: PointerEvent, boardRect: DOMRect): PlacementResult {
     const cellSize = boardRect.width / 10;
     const x = event.clientX - boardRect.left;
     const y = event.clientY - boardRect.top;
 
-    if (piece.shape.length === 3) {
-      // L-shape: Align center-left cell (row 1, col 0) to nearest edge
-      const cellRow = Math.floor(y / cellSize);
-      const cellCol = Math.floor(x / cellSize);
-      const topDist = Math.abs(y - cellRow * cellSize);
-      const bottomDist = Math.abs(y - (cellRow + 1) * cellSize);
-      const leftDist = Math.abs(x - cellCol * cellSize);
-      const rightDist = Math.abs(x - (cellCol + 1) * cellSize);
-      const minDist = Math.min(topDist, bottomDist, leftDist, rightDist);
+    // Get shape dimensions
+    const height = piece.shape.length;
+    const width = piece.shape[0].length;
 
-      let row = cellRow;
-      let col = cellCol;
-      if (leftDist === minDist || rightDist === minDist) {
-        col = leftDist <= rightDist ? cellCol : cellCol + 1;
-      }
-      if (topDist === minDist || bottomDist === minDist) {
-        row = topDist <= bottomDist ? cellRow : cellRow + 1;
-      }
-      return { success: true, row: row - 1, col: col - 1 };
-    } else {
-      // 2x2 square: Snap top-left to one up and left of nearest node
-      const row = Math.round((y - cellSize * 0.25) / cellSize) - 1;
-      const col = Math.round((x - cellSize * 0.25) / cellSize) - 1;
-      return { success: true, row, col };
+    let row: number, col: number;
+
+    switch (piece.anchor) {
+      case 'corner':
+        // Snap top-left corner to grid cell under cursor with slight offset for precision
+        row = Math.floor((y + cellSize * 0.25) / cellSize);
+        col = Math.floor((x + cellSize * 0.25) / cellSize);
+        break;
+      case 'center':
+        // Snap shape's center to nearest grid cell center
+        const centerRow = (y / cellSize) - (height / 2);
+        const centerCol = (x / cellSize) - (width / 2);
+        row = Math.round(centerRow);
+        col = Math.round(centerCol);
+        break;
+      case 'line':
+        // Snap midpoint of line to nearest grid cell
+        if (width > height) {
+          // Horizontal bar: Snap middle column
+          col = Math.round((x / cellSize) - (width / 2));
+          row = Math.floor(y / cellSize);
+        } else {
+          // Vertical bar: Snap middle row
+          row = Math.round((y / cellSize) - (height / 2));
+          col = Math.floor(x / cellSize);
+        }
+        break;
+      default:
+        return { success: false, error: 'Invalid anchor type' };
     }
+
+    // Check bounds
+    if (row < 0 || col < 0 || row + height > 10 || col + width > 10) {
+      return { success: false, error: 'Out of bounds' };
+    }
+
+    return { success: true, row, col };
   }
 
   /** Validates placement for bounds and overlaps */

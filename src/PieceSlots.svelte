@@ -108,8 +108,8 @@
     outline: none;
   }
   .preview .piece-cell {
-    width: calc(min(80vw, 80vh) / 11.11);
-    height: calc(min(80vw, 80vh) / 11.11);
+    width: calc(min(80vw, 80vh) / 10.5);
+    height: calc(min(80vw, 80vh) / 10.5);
   }
   .preview {
     z-index: 1000;
