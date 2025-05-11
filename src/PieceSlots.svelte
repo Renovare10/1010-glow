@@ -25,16 +25,24 @@
       y: clientY
     }));
   }
+
+  function handleEnd() {
+    window.removeEventListener('pointermove', handleMove);
+    window.removeEventListener('touchmove', handleMove);
+    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
+  }
 </script>
 
 <div class="slots">
-  {#each $slots as piece, index (piece.name + index)}
+  {#each $slots as piece, index (`${index}-${piece ? piece.name : 'empty'}`)}
     <div class="slot">
-      {#if $dragging.slotIndex !== index || !$dragging.piece}
+      {#if piece && ($dragging.slotIndex !== index || !$dragging.piece)}
         <div
           class="piece-grid"
           on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
           on:touchstart|passive={e => handleStart(e, piece, index)}
+          on:pointerup={handleEnd}
+          on:touchend={handleEnd}
           style="grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr); grid-template-rows: repeat({piece.shape.length}, 1fr);"
         >
           {#each piece.shape as row, i}
@@ -86,7 +94,6 @@
     justify-content: center;
     gap: 8vw;
     margin-top: 10px;
-    /* Fixed height for largest piece (5 cells tall) + gap */
     height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
   }
   .slot {

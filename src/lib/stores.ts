@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable, get } from 'svelte/store';
 import { PlacementManager } from './placement';
 import { LineClearer } from './lineClearer';
 
@@ -15,7 +15,7 @@ export const gameState = writable<boolean[][]>(
 export type AnchorType = 'corner' | 'center' | 'line';
 export type Piece = { name: string; shape: boolean[][]; anchor: AnchorType };
 export const pieces: Piece[] = [
-  { name: 'square', shape: [[true, true], [true, true]], anchor: 'center' }, // 2x2: Snap center
+  { name: 'square', shape: [[true, true], [true, true]], anchor: 'center' },
   { name: 'L', shape: [[true, false, false], [true, false, false], [true, true, true]], anchor: 'center' },
   { name: 'L_90', shape: [[true, true, true], [true, false, false], [true, false, false]], anchor: 'center' },
   { name: 'L_180', shape: [[true, true, true], [false, false, true], [false, false, true]], anchor: 'center' },
@@ -36,12 +36,28 @@ export const pieces: Piece[] = [
   { name: 'cube3', shape: [[true, true, true], [true, true, true], [true, true, true]], anchor: 'center' }
 ];
 
-export const slots = writable<Piece[]>([]);
+export const slots = writable<(Piece | null)[]>([]);
 export const refillSlots = () => {
   const newSlots = Array(3)
     .fill(null)
     .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
   slots.set(newSlots);
+};
+
+export const popSlot = (slotIndex: number | null) => {
+  if (slotIndex !== null) {
+    slots.update((s) => {
+      const newSlots = [...s];
+      newSlots[slotIndex] = null; // Pop piece
+      return newSlots;
+    });
+
+    // Check if all slots are empty
+    const currentSlots = get(slots);
+    if (currentSlots.every(slot => slot === null)) {
+      refillSlots(); // Generate new set
+    }
+  }
 };
 
 // Store for dragging state

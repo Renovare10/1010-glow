@@ -1,4 +1,5 @@
 import { writable, get, type Writable } from 'svelte/store';
+import { popSlot } from './stores';
 import type { Piece } from './stores';
 
 /** Interface for placement events */
@@ -43,10 +44,10 @@ export class PlacementManager {
   /** Processes placement pipeline: calculate position, validate, apply, clear */
   process(
     gameState: Writable<boolean[][]>,
-    slots: Writable<Piece[]>
+    slots: Writable<(Piece | null)[]>
   ) {
     this.store.subscribe(({ type, piece, event, boardRect, slotIndex }) => {
-      if (this.isProcessing || type !== 'start' || !piece || !event || !boardRect) {
+      if (this.isProcessing || type !== 'start' || !piece || !event || !boardRect || slotIndex === null) {
         if (type === 'start') {
           this.store.set({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
         }
@@ -69,7 +70,7 @@ export class PlacementManager {
       }
 
       this.applyPlacement(piece, result.row!, result.col!, gameState);
-      this.refillSlot(slotIndex, slots);
+      popSlot(slotIndex); // Pop piece and refill if empty
       this.store.set({ type: 'clear', piece: null, event: null, boardRect: null, slotIndex: null });
       this.store.set({ type: 'apply', piece, event: null, boardRect: null, slotIndex: null });
       this.isProcessing = false;
@@ -90,25 +91,20 @@ export class PlacementManager {
 
     switch (piece.anchor) {
       case 'corner':
-        // Snap top-left corner to grid cell under cursor with slight offset for precision
         row = Math.floor((y + cellSize * 0.25) / cellSize);
         col = Math.floor((x + cellSize * 0.25) / cellSize);
         break;
       case 'center':
-        // Snap shape's center to nearest grid cell center
         const centerRow = (y / cellSize) - (height / 2);
         const centerCol = (x / cellSize) - (width / 2);
         row = Math.round(centerRow);
         col = Math.round(centerCol);
         break;
       case 'line':
-        // Snap midpoint of line to nearest grid cell
         if (width > height) {
-          // Horizontal bar: Snap middle column
           col = Math.round((x / cellSize) - (width / 2));
           row = Math.floor(y / cellSize);
         } else {
-          // Vertical bar: Snap middle row
           row = Math.round((y / cellSize) - (height / 2));
           col = Math.floor(x / cellSize);
         }
@@ -117,7 +113,6 @@ export class PlacementManager {
         return { success: false, error: 'Invalid anchor type' };
     }
 
-    // Check bounds
     if (row < 0 || col < 0 || row + height > 10 || col + width > 10) {
       return { success: false, error: 'Out of bounds' };
     }
@@ -160,16 +155,5 @@ export class PlacementManager {
       }
       return newState;
     });
-  }
-
-  /** Refills slot with a random piece */
-  private refillSlot(slotIndex: number | null, slots: Writable<Piece[]>) {
-    if (slotIndex !== null) {
-      slots.update((s) => {
-        const newSlots = [...s];
-        newSlots[slotIndex] = this.pieces[Math.floor(Math.random() * this.pieces.length)];
-        return newSlots;
-      });
-    }
   }
 }

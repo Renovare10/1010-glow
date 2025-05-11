@@ -9,7 +9,6 @@
       .fill(null)
       .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
     slots.set(newSlots);
-    console.log('Initial slots set:', $slots); // Debug log
     placementManager.process(gameState, slots);
 
     const handleDrop = (event: PointerEvent | TouchEvent) => {
@@ -36,6 +35,7 @@
     const clientY = 'touches' in event ? event.changedTouches[0].clientY : event.clientY;
 
     const isOnBoard = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+
     if (!isOnBoard) {
       dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
       return;
@@ -52,7 +52,7 @@
       boardRect: rect,
       slotIndex: $dragging.slotIndex
     });
-    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
+    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 }); // Reset after trigger
   }
 </script>
 
@@ -82,7 +82,7 @@
   .grid {
     display: grid;
     grid-template: repeat(10, 1fr) / repeat(10, 1fr);
-    width: min(74vw, 74vh); /* User-specified size */
+    width: min(74vw, 74vh);
     max-width: 600px;
     height: min(74vw, 74vh);
     max-height: 600px;
