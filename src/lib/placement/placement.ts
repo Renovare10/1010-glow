@@ -1,6 +1,6 @@
 import { writable, get, type Writable } from 'svelte/store';
-import { popSlot } from './stores';
-import type { Piece } from './pieces';
+import { popSlot } from '../game/stores';
+import type { Piece } from '../pieces/pieces';
 
 /** Interface for placement events */
 export interface PlacementEvent {

@@ -1,7 +1,7 @@
 import { writable, type Writable, get } from 'svelte/store';
-import { PlacementManager } from './placement';
-import { LineClearer } from './lineClearer';
-import { type Piece, pieces, getRandomPiece } from './pieces'; // Use type qualifier for Piece
+import { PlacementManager } from '../placement/placement';
+import { LineClearer } from '../placement/lineClearer';
+import { type Piece, pieces, getRandomPiece } from '../pieces/pieces'; // Use type qualifier for Piece
 
 // Re-export Piece for dependent modules
 export type { Piece };
