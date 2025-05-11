@@ -1,6 +1,6 @@
 import { writable, get, type Writable } from 'svelte/store';
 import { popSlot } from './stores';
-import type { Piece } from './stores';
+import type { Piece } from './pieces';
 
 /** Interface for placement events */
 export interface PlacementEvent {
@@ -25,7 +25,7 @@ interface PlacementResult {
 export class PlacementManager {
   private store = writable<PlacementEvent>({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
   private pieces: Piece[];
-  private isProcessing = false;
+  private isProcessing: boolean = false; // Added property
 
   constructor(pieces: Piece[]) {
     this.pieces = pieces;

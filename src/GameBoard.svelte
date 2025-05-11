@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { gameState, dragging, slots, placementManager, pieces } from './lib/stores';
+  import { gameState, dragging, slots, placementManager } from './lib/stores';
+  import { pieces } from './lib/pieces'; // Import pieces from pieces.ts
   import { colorMap } from './lib/colors';
   import PieceSlots from './PieceSlots.svelte';
   import { onMount } from 'svelte';
@@ -77,7 +78,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    упражнениеgap: 20px;
+    gap: 20px; /* Fixed typo from упражнениеgap */
     overflow: auto;
   }
   .grid {
@@ -98,8 +99,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .occupied {
-    /* Color applied via inline style */
   }
 </style>

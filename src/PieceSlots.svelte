@@ -1,7 +1,7 @@
 <script lang="ts">
   import { slots, dragging } from './lib/stores';
   import { colorMap } from './lib/colors';
-  import type { Piece } from './lib/stores';
+  import type { Piece } from './lib/pieces'; // Import Piece from pieces.ts
   let startX: number, startY: number;
 
   function handleStart(event: PointerEvent | TouchEvent, piece: Piece, index: number) {
