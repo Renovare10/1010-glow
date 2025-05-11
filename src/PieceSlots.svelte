@@ -70,7 +70,7 @@
       grid-template-rows: repeat({$dragging.piece.shape.length}, 1fr);
       position: absolute;
       left: {$dragging.x}px;
-      top: {$dragging.y - 100}px; /* Match offset in placement.ts */
+      top: {$dragging.y - 75}px; /* Match offset in placement.ts */
       transform: translate(-50%, -50%);
       pointer-events: none;
       opacity: 0.8;
