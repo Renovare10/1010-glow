@@ -1,5 +1,6 @@
 <script lang="ts">
   import { slots, dragging } from './lib/stores';
+  import { colorMap } from './lib/colors';
   import type { Piece } from './lib/stores';
   let startX: number, startY: number;
 
@@ -50,7 +51,7 @@
               {#if cell}
                 <div
                   class="piece-cell"
-                  style="grid-row: {i + 1}; grid-column: {j + 1};"
+                  style="grid-row: {i + 1}; grid-column: {j + 1}; background: {colorMap[piece.name]};"
                 ></div>
               {/if}
             {/each}
@@ -80,7 +81,7 @@
         {#if cell}
           <div
             class="piece-cell"
-            style="grid-row: {i + 1}; grid-column: {j + 1};"
+            style="grid-row: {i + 1}; grid-column: {j + 1}; background: {colorMap[$dragging.piece.name]};"
           ></div>
         {/if}
       {/each}
@@ -116,7 +117,6 @@
   .piece-cell {
     width: calc(min(74vw, 74vh) / 20);
     height: calc(min(74vw, 74vh) / 20);
-    background: #007acc;
     box-sizing: border-box;
   }
   .piece-grid:focus,
@@ -124,8 +124,8 @@
     outline: none;
   }
   .preview .piece-cell {
-    width: calc(min(64vw, 64vh) / 11.11);
-    height: calc(min(64vw, 64vh) / 11.11);
+    width: calc(min(74vw, 74vh) / 10 * 0.99);
+    height: calc(min(74vw, 74vh) / 10 * 0.99);
   }
   .preview {
     z-index: 1000;

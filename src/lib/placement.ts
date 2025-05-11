@@ -43,7 +43,7 @@ export class PlacementManager {
 
   /** Processes placement pipeline: calculate position, validate, apply, clear */
   process(
-    gameState: Writable<boolean[][]>,
+    gameState: Writable<(string | null)[][]>,
     slots: Writable<(Piece | null)[]>
   ) {
     this.store.subscribe(({ type, piece, event, boardRect, slotIndex }) => {
@@ -121,8 +121,8 @@ export class PlacementManager {
   }
 
   /** Validates placement for bounds and overlaps */
-  private validatePlacement(piece: Piece, row: number, col: number, gameState: Writable<boolean[][]>): boolean {
-    const state: boolean[][] = get(gameState);
+  private validatePlacement(piece: Piece, row: number, col: number, gameState: Writable<(string | null)[][]>): boolean {
+    const state: (string | null)[][] = get(gameState);
     if (
       row < 0 ||
       col < 0 ||
@@ -134,7 +134,7 @@ export class PlacementManager {
 
     for (let i = 0; i < piece.shape.length; i++) {
       for (let j = 0; j < piece.shape[i].length; j++) {
-        if (piece.shape[i][j] && state[row + i][col + j]) {
+        if (piece.shape[i][j] && state[row + i][col + j] !== null) {
           return false;
         }
       }
@@ -143,13 +143,13 @@ export class PlacementManager {
   }
 
   /** Applies piece placement to game state */
-  private applyPlacement(piece: Piece, row: number, col: number, gameState: Writable<boolean[][]>) {
-    gameState.update((state: boolean[][]) => {
-      const newState = state.map((r: boolean[]) => [...r]);
+  private applyPlacement(piece: Piece, row: number, col: number, gameState: Writable<(string | null)[][]>) {
+    gameState.update((state: (string | null)[][]) => {
+      const newState = state.map((r: (string | null)[]) => [...r]);
       for (let i = 0; i < piece.shape.length; i++) {
         for (let j = 0; j < piece.shape[i].length; j++) {
           if (piece.shape[i][j]) {
-            newState[row + i][col + j] = true;
+            newState[row + i][col + j] = piece.name;
           }
         }
       }

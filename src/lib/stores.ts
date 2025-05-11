@@ -8,8 +8,8 @@ export const uiState = writable<{ screen: Screen; paused: boolean }>({
   paused: false
 });
 
-export const gameState = writable<boolean[][]>(
-  Array(10).fill(null).map(() => Array(10).fill(false))
+export const gameState = writable<(string | null)[][]>(
+  Array(10).fill(null).map(() => Array(10).fill(null))
 );
 
 export type AnchorType = 'corner' | 'center' | 'line';

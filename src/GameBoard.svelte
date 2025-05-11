@@ -1,5 +1,6 @@
 <script lang="ts">
   import { gameState, dragging, slots, placementManager, pieces } from './lib/stores';
+  import { colorMap } from './lib/colors';
   import PieceSlots from './PieceSlots.svelte';
   import { onMount } from 'svelte';
 
@@ -60,7 +61,7 @@
   <div class="grid">
     {#each $gameState as row, i}
       {#each row as cell, j}
-        <div class="cell" class:occupied={cell}></div>
+        <div class="cell" class:occupied={cell} style={cell ? `background: ${colorMap[cell]};` : ''}></div>
       {/each}
     {/each}
   </div>
@@ -76,7 +77,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 20px;
+    упражнениеgap: 20px;
     overflow: auto;
   }
   .grid {
@@ -99,6 +100,6 @@
     align-items: center;
   }
   .occupied {
-    background: #007acc;
+    /* Color applied via inline style */
   }
 </style>
