@@ -6,7 +6,6 @@
   import { onMount } from 'svelte';
 
   onMount(() => {
-    // Initialize slots with random pieces
     const newSlots = Array(3)
       .fill(null)
       .map(() => pieces[Math.floor(Math.random() * pieces.length)]);
@@ -33,10 +32,12 @@
     }
 
     const rect = board.getBoundingClientRect();
+    // Extend input detection area by 100px below the board
+    const extendedRect = new DOMRect(rect.x, rect.y, rect.width, rect.height + 100);
     const clientX = 'touches' in event ? event.changedTouches[0].clientX : event.clientX;
     const clientY = 'touches' in event ? event.changedTouches[0].clientY : event.clientY;
 
-    const isOnBoard = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+    const isOnBoard = clientX >= extendedRect.left && clientX <= extendedRect.right && clientY >= extendedRect.top && clientY <= extendedRect.bottom;
 
     if (!isOnBoard) {
       dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
@@ -51,10 +52,10 @@
       type: 'start',
       piece: $dragging.piece,
       event: pointerEvent,
-      boardRect: rect,
+      boardRect: rect, // Use original rect for placement calculations
       slotIndex: $dragging.slotIndex
     });
-    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 }); // Reset after trigger
+    dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
   }
 </script>
 

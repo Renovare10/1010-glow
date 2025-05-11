@@ -1,7 +1,7 @@
 <script lang="ts">
   import { slots, dragging } from './lib/game/stores';
   import { colorMap } from './lib/pieces/colors';
-  import type { Piece } from './lib/pieces/pieces'; // Import Piece from pieces.ts
+  import type { Piece } from './lib/pieces/pieces';
   let startX: number, startY: number;
 
   function handleStart(event: PointerEvent | TouchEvent, piece: Piece, index: number) {
@@ -70,7 +70,7 @@
       grid-template-rows: repeat({$dragging.piece.shape.length}, 1fr);
       position: absolute;
       left: {$dragging.x}px;
-      top: {$dragging.y}px;
+      top: {$dragging.y - 100}px; /* Match offset in placement.ts */
       transform: translate(-50%, -50%);
       pointer-events: none;
       opacity: 0.8;

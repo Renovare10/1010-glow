@@ -2,7 +2,6 @@ import { writable, get, type Writable } from 'svelte/store';
 import { popSlot } from '../game/stores';
 import type { Piece } from '../pieces/pieces';
 
-/** Interface for placement events */
 export interface PlacementEvent {
   type: 'start' | 'validate' | 'apply' | 'clear' | 'cancel';
   piece: Piece | null;
@@ -11,7 +10,6 @@ export interface PlacementEvent {
   slotIndex: number | null;
 }
 
-/** Interface for placement result */
 interface PlacementResult {
   success: boolean;
   row?: number;
@@ -19,29 +17,23 @@ interface PlacementResult {
   error?: string;
 }
 
-/**
- * Manages piece placement as an event-driven pipeline.
- */
 export class PlacementManager {
   private store = writable<PlacementEvent>({ type: 'cancel', piece: null, event: null, boardRect: null, slotIndex: null });
   private pieces: Piece[];
-  private isProcessing: boolean = false; // Added property
+  private isProcessing: boolean = false;
 
   constructor(pieces: Piece[]) {
     this.pieces = pieces;
   }
 
-  /** Exposes the store for subscription */
   getStore() {
     return this.store;
   }
 
-  /** Triggers a placement event */
   trigger(event: PlacementEvent) {
     this.store.set(event);
   }
 
-  /** Processes placement pipeline: calculate position, validate, apply, clear */
   process(
     gameState: Writable<(string | null)[][]>,
     slots: Writable<(Piece | null)[]>
@@ -70,20 +62,18 @@ export class PlacementManager {
       }
 
       this.applyPlacement(piece, result.row!, result.col!, gameState);
-      popSlot(slotIndex); // Pop piece and refill if empty
+      popSlot(slotIndex);
       this.store.set({ type: 'clear', piece: null, event: null, boardRect: null, slotIndex: null });
       this.store.set({ type: 'apply', piece, event: null, boardRect: null, slotIndex: null });
       this.isProcessing = false;
     });
   }
 
-  /** Calculates drop position by snapping shape's anchor to nearest grid position */
   private calculatePosition(piece: Piece, event: PointerEvent, boardRect: DOMRect): PlacementResult {
     const cellSize = boardRect.width / 10;
     const x = event.clientX - boardRect.left;
-    const y = event.clientY - boardRect.top;
+    const y = event.clientY - boardRect.top - 100; // Keep offset for preview visibility
 
-    // Get shape dimensions
     const height = piece.shape.length;
     const width = piece.shape[0].length;
 
@@ -113,14 +103,15 @@ export class PlacementManager {
         return { success: false, error: 'Invalid anchor type' };
     }
 
-    if (row < 0 || col < 0 || row + height > 10 || col + width > 10) {
+    // Clamp row to ensure bottom-row placement
+    row = Math.min(row, 9 - height + 1);
+    if (row < 0 || col < 0 || col + width > 10) {
       return { success: false, error: 'Out of bounds' };
     }
 
     return { success: true, row, col };
   }
 
-  /** Validates placement for bounds and overlaps */
   private validatePlacement(piece: Piece, row: number, col: number, gameState: Writable<(string | null)[][]>): boolean {
     const state: (string | null)[][] = get(gameState);
     if (
@@ -142,7 +133,6 @@ export class PlacementManager {
     return true;
   }
 
-  /** Applies piece placement to game state */
   private applyPlacement(piece: Piece, row: number, col: number, gameState: Writable<(string | null)[][]>) {
     gameState.update((state: (string | null)[][]) => {
       const newState = state.map((r: (string | null)[]) => [...r]);
