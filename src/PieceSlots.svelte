@@ -103,13 +103,13 @@
 {/if}
 
 <style>
-  .slots {
-    display: flex;
-    justify-content: center;
-    gap: 10vw; /* Increased gap to prevent overlap */
-    margin-top: 10px;
-    height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
-  }
+.slots {
+  display: flex;
+  justify-content: center;
+  gap: calc(min(calc(min(74vw, 74vh) / 10), 60px) * 2); /* 2 cell sizes for spacing */
+  margin-top: 10px;
+  height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
+}
   .slot {
     border-radius: 4px;
     display: flex;
@@ -136,8 +136,8 @@
     gap: 2px;
   }
   .piece-cell {
-    width: calc(min(74vw, 74vh) / 20);
-    height: calc(min(74vw, 74vh) / 20);
+  width: min(calc(min(74vw, 74vh) / 11), 60px);
+  height: min(calc(min(74vw, 74vh) / 11), 60px);
     box-sizing: border-box;
   }
   .piece-container:focus,
