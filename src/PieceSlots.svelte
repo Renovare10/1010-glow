@@ -1,3 +1,4 @@
+
 <script lang="ts">
   import { slots, dragging } from './lib/game/stores';
   import { colorMap } from './lib/pieces/colors';
@@ -38,24 +39,36 @@
   {#each $slots as piece, index (`${index}-${piece ? piece.name : 'empty'}`)}
     <div class="slot">
       {#if piece && ($dragging.slotIndex !== index || !$dragging.piece)}
+        <!-- Wrap piece in a 5x5 grid for larger grabbable area -->
         <div
-          class="piece-grid"
+          class="piece-container"
           on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
           on:touchstart|passive={e => handleStart(e, piece, index)}
           on:pointerup={handleEnd}
           on:touchend={handleEnd}
-          style="grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr); grid-template-rows: repeat({piece.shape.length}, 1fr);"
         >
-          {#each piece.shape as row, i}
-            {#each row as cell, j}
-              {#if cell}
-                <div
-                  class="piece-cell"
-                  style="grid-row: {i + 1}; grid-column: {j + 1}; background: {colorMap[piece.name]};"
-                ></div>
-              {/if}
+          <div
+            class="piece-grid"
+            style="
+              grid-template-columns: repeat({piece.shape[0]?.length || 1}, 1fr);
+              grid-template-rows: repeat({piece.shape.length}, 1fr);
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            "
+          >
+            {#each piece.shape as row, i}
+              {#each row as cell, j}
+                {#if cell}
+                  <div
+                    class="piece-cell"
+                    style="grid-row: {i + 1}; grid-column: {j + 1}; background: {colorMap[piece.name]};"
+                  ></div>
+                {/if}
+              {/each}
             {/each}
-          {/each}
+          </div>
         </div>
       {/if}
     </div>
@@ -70,7 +83,7 @@
       grid-template-rows: repeat({$dragging.piece.shape.length}, 1fr);
       position: absolute;
       left: {$dragging.x}px;
-      top: {$dragging.y - 75}px; /* Match offset in placement.ts */
+      top: {$dragging.y - 75}px;
       transform: translate(-50%, -50%);
       pointer-events: none;
       opacity: 0.8;
@@ -93,7 +106,7 @@
   .slots {
     display: flex;
     justify-content: center;
-    gap: 8vw;
+    gap: 10vw; /* Increased gap to prevent overlap */
     margin-top: 10px;
     height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
   }
@@ -105,22 +118,30 @@
     width: calc((min(74vw, 74vh) / 20) * 5);
     height: calc((min(74vw, 74vh) / 20) * 5);
   }
-  .piece-grid {
+  .piece-container {
     display: grid;
-    gap: 2px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: calc(min(74vw, 74vh) / 20 * 5); /* Full slot size for max grabbable area */
+    height: calc(min(74vw, 74vh) / 20 * 5);
+    position: relative;
     cursor: grab;
     touch-action: none;
   }
-  .piece-grid:active {
+  .piece-container:active {
     cursor: grabbing;
+  }
+  .piece-grid {
+    display: grid;
+    gap: 2px;
   }
   .piece-cell {
     width: calc(min(74vw, 74vh) / 20);
     height: calc(min(74vw, 74vh) / 20);
     box-sizing: border-box;
   }
-  .piece-grid:focus,
-  .piece-grid:active {
+  .piece-container:focus,
+  .piece-container:active {
     outline: none;
   }
   .preview .piece-cell {
