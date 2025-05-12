@@ -86,7 +86,7 @@
       top: {$dragging.y - 75}px;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      opacity: 0.8;
+      opacity: 1;
     "
   >
     {#each $dragging.piece.shape as row, i}
@@ -144,10 +144,10 @@
   .piece-container:active {
     outline: none;
   }
-  .preview .piece-cell {
-    width: calc(min(74vw, 74vh) / 10 * 0.65);
-    height: calc(min(74vw, 74vh) / 10 * 0.65);
-  }
+.preview .piece-cell {
+  width: min(calc(min(74vw, 74vh) / 10), 60px);
+  height: min(calc(min(74vw, 74vh) / 10), 60px);
+}
   .preview {
     z-index: 1000;
   }
