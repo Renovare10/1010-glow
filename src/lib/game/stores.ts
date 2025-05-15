@@ -1,7 +1,8 @@
 import { writable, type Writable, get } from 'svelte/store';
 import { PlacementManager } from '../placement/placement';
 import { LineClearer } from '../placement/lineClearer';
-import { type Piece, pieces, getRandomPiece } from '../pieces/pieces'; // Use type qualifier for Piece
+import { ScoreManager } from './ScoreManager';
+import { type Piece, pieces, getRandomPiece } from '../pieces/pieces';
 
 // Re-export Piece for dependent modules
 export type { Piece };
@@ -12,9 +13,12 @@ export const uiState = writable<{ screen: Screen; paused: boolean }>({
   paused: false
 });
 
-export const gameState = writable<(string | null)[][]>(
-  Array(10).fill(null).map(() => Array(10).fill(null))
-);
+// Initialize game state with configurable dimensions
+export const initGameState = (width: number, height: number) =>
+  writable<(string | null)[][]>(
+    Array(height).fill(null).map(() => Array(width).fill(null))
+  );
+export const gameState = initGameState(10, 10);
 
 export const slots = writable<(Piece | null)[]>([]);
 export const refillSlots = () => {
@@ -52,4 +56,9 @@ export const dragging = writable<{
 export const placementManager = new PlacementManager(pieces);
 
 // Line clearer, subscribed to placement pipeline
-export const lineClearer = new LineClearer(placementManager.getStore(), gameState);
+export const lineClearer = new LineClearer(placementManager.getStore(), gameState, 10, 10);
+export const clearedLines = lineClearer.clearedLines;
+
+// Score manager, subscribed to cleared lines
+export const scoreManager = new ScoreManager(clearedLines);
+export const score = scoreManager.score;

@@ -72,7 +72,7 @@ export class PlacementManager {
   private calculatePosition(piece: Piece, event: PointerEvent, boardRect: DOMRect): PlacementResult {
     const cellSize = boardRect.width / 10;
     const x = event.clientX - boardRect.left;
-    const y = event.clientY - boardRect.top - 70; // Keep offset for preview visibility
+    const y = event.clientY - boardRect.top - 90; // Keep offset for preview visibility
 
     const height = piece.shape.length;
     const width = piece.shape[0].length;

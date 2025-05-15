@@ -14,12 +14,9 @@
 <style>
   .grid {
     display: grid;
-    grid-template: repeat(10, 1fr) / repeat(10, 1fr);
-    width: min(74vw, 74vh);
-    max-width: 600px;
-    height: min(74vw, 74vh);
-    max-height: 600px;
-    aspect-ratio: 1;
+    grid-template: repeat(10, var(--scale-unit)) / repeat(10, var(--scale-unit));
+    width: calc(var(--scale-unit) * 10); /* 10 cells wide */
+    height: calc(var(--scale-unit) * 10); /* 10 cells tall */
     gap: 2px;
     background: #252526;
     margin: 0;

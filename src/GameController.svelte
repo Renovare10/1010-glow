@@ -32,7 +32,6 @@
     }
 
     const rect = board.getBoundingClientRect();
-    // Extend input detection area by 100px below the board
     const extendedRect = new DOMRect(rect.x, rect.y, rect.width, rect.height + 100);
     const clientX = 'touches' in event ? event.changedTouches[0].clientX : event.clientX;
     const clientY = 'touches' in event ? event.changedTouches[0].clientY : event.clientY;
@@ -52,7 +51,7 @@
       type: 'start',
       piece: $dragging.piece,
       event: pointerEvent,
-      boardRect: rect, // Use original rect for placement calculations
+      boardRect: rect,
       slotIndex: $dragging.slotIndex
     });
     dragging.set({ piece: null, slotIndex: null, x: 0, y: 0 });
@@ -70,6 +69,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 50px;
+    gap: var(--scale-unit); /* Scaled gap */
+    height: 100%; /* Fit within grid row */
   }
 </style>

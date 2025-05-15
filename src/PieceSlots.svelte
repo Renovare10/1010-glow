@@ -1,4 +1,3 @@
-
 <script lang="ts">
   import { slots, dragging } from './lib/game/stores';
   import { colorMap } from './lib/pieces/colors';
@@ -39,7 +38,6 @@
   {#each $slots as piece, index (`${index}-${piece ? piece.name : 'empty'}`)}
     <div class="slot">
       {#if piece && ($dragging.slotIndex !== index || !$dragging.piece)}
-        <!-- Wrap piece in a 5x5 grid for larger grabbable area -->
         <div
           class="piece-container"
           on:pointerdown|preventDefault|stopPropagation={e => handleStart(e, piece, index)}
@@ -103,27 +101,27 @@
 {/if}
 
 <style>
-.slots {
-  display: flex;
-  justify-content: center;
-  gap: calc(min(calc(min(74vw, 74vh) / 10), 60px) * 2); /* 2 cell sizes for spacing */
-  margin-top: 10px;
-  height: calc((min(74vw, 74vh) / 20) * 5 + 0.4vw);
-}
+  .slots {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--scale-unit) * 2); /* Scaled spacing */
+    margin-top: calc(var(--scale-unit) * 0.5);
+    height: calc(var(--scale-unit) * 5);
+  }
   .slot {
     border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: calc((min(74vw, 74vh) / 20) * 5);
-    height: calc((min(74vw, 74vh) / 20) * 5);
+    width: calc(var(--scale-unit) * 5);
+    height: calc(var(--scale-unit) * 5);
   }
   .piece-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    width: calc(min(74vw, 74vh) / 20 * 5); /* Full slot size for max grabbable area */
-    height: calc(min(74vw, 74vh) / 20 * 5);
+    width: calc(var(--scale-unit) * 5);
+    height: calc(var(--scale-unit) * 5);
     position: relative;
     cursor: grab;
     touch-action: none;
@@ -136,18 +134,18 @@
     gap: 2px;
   }
   .piece-cell {
-  width: min(calc(min(74vw, 74vh) / 11), 60px);
-  height: min(calc(min(74vw, 74vh) / 11), 60px);
+    width: var(--scale-unit);
+    height: var(--scale-unit);
     box-sizing: border-box;
   }
   .piece-container:focus,
   .piece-container:active {
     outline: none;
   }
-.preview .piece-cell {
-  width: min(calc(min(74vw, 74vh) / 10), 60px);
-  height: min(calc(min(74vw, 74vh) / 10), 60px);
-}
+  .preview .piece-cell {
+    width: calc(var(--scale-unit) * 0.99);
+    height: calc(var(--scale-unit) * 0.99);
+  }
   .preview {
     z-index: 1000;
   }
