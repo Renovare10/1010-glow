@@ -18,11 +18,11 @@ export class ScoreManager {
 
   /**
    * Updates the score based on the number of lines cleared.
+   * Uses formula: points = 10 * lines * (lines + 1) / 2
    * @param linesCleared - Number of lines cleared (rows + columns).
    */
   private updateScore(linesCleared: number): void {
-    // Simple scoring: 100 points per line
-    const points = linesCleared * 100;
+    const points = Math.floor(10 * linesCleared * (linesCleared + 1) / 2);
     this.score.update(current => current + points);
   }
 
