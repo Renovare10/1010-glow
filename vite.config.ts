@@ -10,5 +10,5 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
-  base: '/1010-glow', // Add this to align with svelte.config.js
+  base: '/1010-glow/', // Add this to align with svelte.config.js
 });
