@@ -1,5 +1,5 @@
 AI Context for 1010-Glow Project  
-**Project Overview**  
+**Project Overview**
 **Goal**: Build a 1010-klooni style puzzle game using Svelte, Vite, and TypeScript, with a mobile-first, PWA approach.  
 
 **Current State**: 10x10 game board implemented, responsive, dark-themed (VS Code style, #1e1e1e), centered with three piece slots below; diverse pieces (2x2 square, small/large L-shapes with rotations, 1-5 cell bars, 3x3 cube) draggable with smooth placement, overlap validation, and line clearing for full rows/columns; random piece generation; scoring system (10, 30, 60, 100 points for 1, 2, 3, 4 lines); piece-specific colors (e.g., Frost Blue #88c0d0 for square, Pine Green #4c566a for L); drag preview scaled to 99% of board cell size with 75px Y-offset for thumb visibility; deployed to AWS S3 (http://chadm-portfolio.s3-website.us-east-2.amazonaws.com/1010-glow/); no menu, pause screen, or separate score display (score shown in Gameboard.svelte); focusing on core mechanics.
